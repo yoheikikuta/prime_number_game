@@ -1,0 +1,9 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+#number-display {
+  font-size: 48px;
+  margin-top: 20px;
+}
