@@ -2,6 +2,9 @@ const startButton = document.getElementById('start-button');
 const numberDisplay = document.getElementById('number-display');
 const primeButton = document.getElementById('prime-button');
 const compositeButton = document.getElementById('composite-button');
+const timerDisplay = document.getElementById('timer');
+
+let timeoutId;
 
 function isPrime(num) {
   if (num <= 1) return false;
@@ -12,12 +15,17 @@ function isPrime(num) {
 }
 
 function handleButtonClick(button, correct) {
+  clearTimeout(timeoutId);
   primeButton.disabled = true;
   compositeButton.disabled = true;
-  button.classList.add(correct ? 'correct' : 'incorrect');
+  if (button) {
+    button.classList.add(correct ? 'correct' : 'incorrect');
+  }
 
   setTimeout(() => {
-    button.classList.remove('correct', 'incorrect');
+    if (button) {
+      button.classList.remove('correct', 'incorrect');
+    }
     startButton.disabled = false;
   }, 1000);
 }
@@ -38,4 +46,18 @@ startButton.addEventListener('click', () => {
   startButton.disabled = true;
   primeButton.disabled = false;
   compositeButton.disabled = false;
+
+  let timeLeft = 10;
+  timerDisplay.textContent = timeLeft;
+
+  // タイマーの更新
+  timeoutId = setInterval(() => {
+    timeLeft--;
+    timerDisplay.textContent = timeLeft;
+
+    if (timeLeft === 0) {
+      clearTimeout(timeoutId);
+      handleButtonClick(null, false); // 時間切れの場合は不正解として扱う
+    }
+  }, 1000);
 });
