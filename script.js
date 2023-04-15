@@ -33,7 +33,7 @@ compositeButton.addEventListener('click', () => {
 });
 
 startButton.addEventListener('click', () => {
-  const randomNumber = Math.floor(Math.random() * 10) + 1; // 1 から 10 までのランダムな整数
+  const randomNumber = Math.floor(Math.random() * 9) + 2; // 2 から 10 までのランダムな整数
   numberDisplay.textContent = randomNumber;
   startButton.disabled = true;
   primeButton.disabled = false;
