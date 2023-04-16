@@ -6,6 +6,7 @@ const timerDisplay = document.getElementById('timer');
 
 const totalQuestions = 2;
 let currentQuestion = 0;
+let correctAnswers = 0;
 let timeoutId;
 
 function isPrime(num) {
@@ -20,6 +21,11 @@ function handleButtonClick(button, correct) {
   clearTimeout(timeoutId);
   primeButton.disabled = true;
   compositeButton.disabled = true;
+
+  if (correct) {
+    correctAnswers++;
+  }
+
   if (button) {
     button.classList.add(correct ? 'correct' : 'incorrect');
   }
@@ -41,6 +47,14 @@ compositeButton.addEventListener('click', () => {
   const number = parseInt(numberDisplay.textContent, 10);
   handleButtonClick(compositeButton, !isPrime(number));
 });
+
+function showResults() {
+  numberDisplay.textContent = `結果: ${correctAnswers} / ${totalQuestions} 問正解`;
+  startButton.disabled = false;
+  startButton.textContent = 'もう一度挑戦';
+  correctAnswers = 0;
+  currentQuestion = 0;
+}
 
 function startNextQuestion() {
   if (currentQuestion < totalQuestions) {
@@ -65,7 +79,7 @@ function startNextQuestion() {
       }
     }, 1000);
   } else {
-    // ゲーム終了処理（後ほど実装）
+    showResults();
   }
 }
 
