@@ -17,6 +17,19 @@ function isPrime(num) {
   return true;
 }
 
+function primeFactorization(num) {
+  const factors = [];
+  for (let divisor = 2; num > 1; divisor++) {
+    while (num % divisor === 0) {
+      factors.push(divisor);
+      num /= divisor;
+    }
+  }
+  return factors;
+}
+
+const factorizationResult = document.getElementById('factorization-result');
+
 function handleButtonClick(button, correct) {
   clearTimeout(timeoutId);
   primeButton.disabled = true;
@@ -29,6 +42,11 @@ function handleButtonClick(button, correct) {
   if (button) {
     button.classList.add(correct ? 'correct' : 'incorrect');
   }
+
+  // 素因数分解の結果を表示
+  const number = parseInt(numberDisplay.textContent, 10);
+  const factors = primeFactorization(number);
+  factorizationResult.textContent = `${number} = ${factors.join(' × ')}`;
 
   setTimeout(() => {
     if (button) {
