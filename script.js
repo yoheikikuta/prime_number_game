@@ -6,13 +6,22 @@ class PrimeGame {
     this.compositeButton = document.getElementById('composite-button');
     this.timerDisplay = document.getElementById('timer');
     this.factorizationResult = document.getElementById('factorization-result');
-
-    this.totalQuestions = 2;
+    
+    this.totalQuestions = 20;
     this.currentQuestion = 0;
     this.correctAnswers = 0;
     this.timeoutId = null;
-
-    this.setupEventListeners();
+    
+    this.usedNumbers = new Set();
+    this.startButton.addEventListener('click', () => this.startNextQuestion());
+    this.primeButton.addEventListener('click', () => {
+      const number = parseInt(this.numberDisplay.textContent, 10);
+      this.handleButtonClick(this.primeButton, this.isPrime(number));
+    });
+    this.compositeButton.addEventListener('click', () => {
+      const number = parseInt(this.numberDisplay.textContent, 10);
+      this.handleButtonClick(this.compositeButton, !this.isPrime(number));
+    });
   }
 
   isPrime(num) {
@@ -82,10 +91,27 @@ class PrimeGame {
     this.currentQuestion = 0;
   }
 
+  generateRandomNumber() {
+    let randomNumber;
+    
+    if (this.currentQuestion <= 10) {
+      do {
+        randomNumber = Math.floor(Math.random() * 98) + 2; // 2 から 99 までのランダムな整数
+      } while (randomNumber % 2 === 0 || this.usedNumbers.has(randomNumber));
+    } else {
+      do {
+        randomNumber = Math.floor(Math.random() * 900) + 100; // 100 から 999 までのランダムな整数
+      } while (randomNumber % 2 === 0 || this.usedNumbers.has(randomNumber));
+    }
+
+    this.usedNumbers.add(randomNumber);
+    return randomNumber;
+  }
+
   startNextQuestion() {
     if (this.currentQuestion < this.totalQuestions) {
       this.currentQuestion++;
-      const randomNumber = Math.floor(Math.random() * 9) + 2;
+      const randomNumber = this.generateRandomNumber();
       this.numberDisplay.textContent = randomNumber;
       this.startButton.disabled = true;
       this.primeButton.disabled = false;
