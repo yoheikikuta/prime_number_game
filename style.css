@@ -37,3 +37,10 @@ button.correct {
 button.incorrect {
   background-color: red;
 }
+
+#factorization-result {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #000000;
+  margin-top: 1em;
+}
