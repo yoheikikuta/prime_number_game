@@ -23,19 +23,33 @@ body {
   margin-left: 5px;
 }
 
-#buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-
 button.correct {
   background-color: green;
 }
 
 button.incorrect {
   background-color: red;
+}
+
+button {
+  font-size: 1.2em;
+  padding: 10px 20px;
+  cursor: pointer;
+  min-width: 100px; // 追加
+}
+
+#buttons-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+}
+
+#prime-button {
+  margin-right: 10px;
+}
+
+#composite-button {
+  margin-left: 10px;
 }
 
 #factorization-result {
