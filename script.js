@@ -49,11 +49,13 @@ function handleButtonClick(button, correct) {
   factorizationResult.textContent = `${number} = ${factors.join(' × ')}`;
 
   setTimeout(() => {
-    if (button) {
-      button.classList.remove('correct', 'incorrect');
-    }
-    startNextQuestion();
-  }, 1000);
+  if (button) {
+    button.classList.remove('correct', 'incorrect');
+  }
+  factorizationResult.textContent = ''; // 素因数分解の結果表示をクリア
+  startNextQuestion();
+}, 1000);
+
 }
 
 primeButton.addEventListener('click', () => {
