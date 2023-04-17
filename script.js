@@ -5,23 +5,17 @@ class PrimeGame {
     this.primeButton = document.getElementById('prime-button');
     this.compositeButton = document.getElementById('composite-button');
     this.timerDisplay = document.getElementById('timer');
-    this.factorizationResult = document.getElementById('factorization-result');
-    
+    this.timerProgress = document.getElementById('timer-progress');
+
     this.totalQuestions = 20;
     this.currentQuestion = 0;
     this.correctAnswers = 0;
     this.timeoutId = null;
-    
     this.usedNumbers = new Set();
+
     this.startButton.addEventListener('click', () => this.startNextQuestion());
-    this.primeButton.addEventListener('click', () => {
-      const number = parseInt(this.numberDisplay.textContent, 10);
-      this.handleButtonClick(this.primeButton, this.isPrime(number));
-    });
-    this.compositeButton.addEventListener('click', () => {
-      const number = parseInt(this.numberDisplay.textContent, 10);
-      this.handleButtonClick(this.compositeButton, !this.isPrime(number));
-    });
+    this.primeButton.addEventListener('click', () => this.handleButtonClick(this.primeButton, this.isPrime(this.currentNumber)));
+    this.compositeButton.addEventListener('click', () => this.handleButtonClick(this.compositeButton, !this.isPrime(this.currentNumber)));
   }
 
   isPrime(num) {
@@ -56,31 +50,17 @@ class PrimeGame {
       button.classList.add(correct ? 'correct' : 'incorrect');
     }
 
-    const number = parseInt(this.numberDisplay.textContent, 10);
-    const factors = this.primeFactorization(number);
-    this.factorizationResult.textContent = `${number} = ${factors.join(' × ')}`;
+    const factorizationResult = document.getElementById('factorization-result');
+    const factors = this.primeFactorization(this.currentNumber);
+    factorizationResult.textContent = `${this.currentNumber} = ${factors.join(' × ')}`;
 
     setTimeout(() => {
       if (button) {
         button.classList.remove('correct', 'incorrect');
       }
-      this.factorizationResult.textContent = '';
+      factorizationResult.textContent = '';
       this.startNextQuestion();
     }, 1000);
-  }
-
-  setupEventListeners() {
-    this.primeButton.addEventListener('click', () => {
-      const number = parseInt(this.numberDisplay.textContent, 10);
-      this.handleButtonClick(this.primeButton, this.isPrime(number));
-    });
-
-    this.compositeButton.addEventListener('click', () => {
-      const number = parseInt(this.numberDisplay.textContent, 10);
-      this.handleButtonClick(this.compositeButton, !this.isPrime(number));
-    });
-
-    this.startButton.addEventListener('click', this.startNextQuestion.bind(this));
   }
 
   showResults() {
@@ -89,20 +69,17 @@ class PrimeGame {
     this.startButton.textContent = 'もう一度挑戦';
     this.correctAnswers = 0;
     this.currentQuestion = 0;
+    this.usedNumbers.clear();
   }
 
   generateRandomNumber() {
     let randomNumber;
-    
-    if (this.currentQuestion <= 10) {
-      do {
-        randomNumber = Math.floor(Math.random() * 98) + 2; // 2 から 99 までのランダムな整数
-      } while (randomNumber % 2 === 0 || this.usedNumbers.has(randomNumber));
-    } else {
-      do {
-        randomNumber = Math.floor(Math.random() * 900) + 100; // 100 から 999 までのランダムな整数
-      } while (randomNumber % 2 === 0 || this.usedNumbers.has(randomNumber));
-    }
+    const lowerBound = this.currentQuestion <= 10 ? 3 : 100;
+    const upperBound = this.currentQuestion <= 10 ? 99 : 999;
+
+    do {
+      randomNumber = Math.floor(Math.random() * (upperBound - lowerBound + 1)) + lowerBound;
+    } while (randomNumber % 2 === 0 || this.usedNumbers.has(randomNumber));
 
     this.usedNumbers.add(randomNumber);
     return randomNumber;
@@ -111,19 +88,20 @@ class PrimeGame {
   startNextQuestion() {
     if (this.currentQuestion < this.totalQuestions) {
       this.currentQuestion++;
-      const randomNumber = this.generateRandomNumber();
-      this.numberDisplay.textContent = randomNumber;
+      this.currentNumber = this.generateRandomNumber();
+      this.numberDisplay.textContent = this.currentNumber;
       this.startButton.disabled = true;
       this.primeButton.disabled = false;
       this.compositeButton.disabled = false;
 
       let timeLeft = 10;
       this.timerDisplay.textContent = timeLeft;
+      this.timerProgress.style.width = '100%';
 
       this.timeoutId = setInterval(() => {
         timeLeft--;
         this.timerDisplay.textContent = timeLeft;
-
+        this.timerProgress.style.width = `${(timeLeft / 10) * 100}%`;
         if (timeLeft === 0) {
           clearTimeout(this.timeoutId);
           this.handleButtonClick(null, false);
